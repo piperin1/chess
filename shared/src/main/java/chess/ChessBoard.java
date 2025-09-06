@@ -7,9 +7,10 @@ package chess;
  * signature of the existing methods.
  */
 public class ChessBoard {
+    private final ChessPiece[][] board;
 
     public ChessBoard() {
-        
+       board = new ChessPiece[8][8];
     }
 
     /**
@@ -19,7 +20,12 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        throw new RuntimeException("Not implemented");
+        if (this.board[position.getRow()-1][position.getColumn()-1]==null) {
+            this.board[position.getRow()-1][position.getColumn()-1] = piece;
+        }
+        else {
+            throw new IllegalArgumentException("Square already occupied at " + position);
+        }
     }
 
     /**
@@ -30,7 +36,7 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        throw new RuntimeException("Not implemented");
+        return this.board[position.getRow()-1][position.getColumn()-1];
     }
 
     /**
@@ -38,6 +44,32 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        throw new RuntimeException("Not implemented");
+        clearBoard();
+
+        ChessPiece.PieceType[] outerRow = {
+                ChessPiece.PieceType.ROOK, ChessPiece.PieceType.KNIGHT, ChessPiece.PieceType.BISHOP,
+                ChessPiece.PieceType.QUEEN, ChessPiece.PieceType.KING,
+                ChessPiece.PieceType.BISHOP, ChessPiece.PieceType.KNIGHT, ChessPiece.PieceType.ROOK
+        };
+
+        for (int i = 0; i < 8; i++) {
+            board[0][i] = new ChessPiece(ChessGame.TeamColor.BLACK, outerRow[i]);
+            board[1][i] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
+            board[6][i] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
+            board[7][i] = new ChessPiece(ChessGame.TeamColor.WHITE, outerRow[i]);
+        }
     }
+
+    /**
+     * Clears board to be totally empty
+     */
+    public void clearBoard() {
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                board[row][col] = null;
+            }
+        }
+    }
+
+
 }
