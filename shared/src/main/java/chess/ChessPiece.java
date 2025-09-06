@@ -67,24 +67,71 @@ public class ChessPiece {
         switch (type) {
             case PAWN:
                 //Step Forward 1
-                ChessPosition forwardOne = new ChessPosition(myPosition.getRow() + (1 * direction), myPosition.getColumn());
+                ChessPosition forwardOne = new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn());
                 if (onBoard(forwardOne) && board.getPiece(forwardOne) == null) {
-                    //Add promo conditional here
-                    ChessMove move = new ChessMove(myPosition,forwardOne,null);
+                    if (isPromotionRank(forwardOne, team)) {
+                        addPromotionMoves(moveList, myPosition, forwardOne);
+                    } else {
+                        moveList.add(new ChessMove(myPosition, forwardOne, null));
+                    }
                 }
                 //Step Forward 2 (Conditional)
                 if ((team == ChessGame.TeamColor.WHITE && myPosition.getRow() == 2) || (team== ChessGame.TeamColor.BLACK && myPosition.getRow() == 7)) {
                     ChessPosition forwardTwo = new ChessPosition(myPosition.getRow() + (2 * direction), myPosition.getColumn());
-                    if (board.getPiece(forwardTwo) == null) {
+                    if (onBoard(forwardTwo) && board.getPiece(forwardOne)== null && board.getPiece(forwardTwo) == null) {
                         ChessMove move = new ChessMove(myPosition, forwardTwo, null);
+                        moveList.add(move);
                     }
                 }
                 //Diagonal capture
-                
-
+                for (int offset: new int[]{-1,1}) {
+                    ChessPosition diag = new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn() + offset );
+                    if (onBoard(diag) && board.getPiece(diag)!=null) {
+                        if (board.getPiece(diag).getTeamColor() != team) {
+                            if (isPromotionRank(diag, team)) {
+                                addPromotionMoves(moveList, myPosition, diag);
+                            } else {
+                                moveList.add(new ChessMove(myPosition, diag, null));
+                            }
+                        }
+                    }
+                }
                 break;
             case ROOK:
-                //add code
+                int[][] directions= {
+                        {1, 0}, //up
+                        {-1,0}, //down
+                        {0, 1}, //right
+                        {0,-1}, //left
+                };
+
+                for (int[] dir : directions) {
+                    int dRow = dir[0];
+                    int dCol = dir[1];
+                    int row = myPosition.getRow();
+                    int col = myPosition.getColumn();
+
+                    while(true) {
+                        row += dRow;
+                        col += dCol;
+                        ChessPosition next = new ChessPosition(row, col);
+
+                        if (!onBoard(next)) {
+                            break;
+                        }
+
+                        if (board.getPiece(next)!=null){
+                            if (board.getPiece(next).getTeamColor()!=team){
+                                ChessMove move = new ChessMove(myPosition, next,null);
+                                moveList.add(move);
+                            }
+                            break;
+                        }
+
+                        ChessMove move = new ChessMove(myPosition, next,null);
+                        moveList.add(move);
+                    }
+                }
                 break;
             case KNIGHT:
                 // add code
@@ -106,9 +153,31 @@ public class ChessPiece {
     /**
      * Returns true when a position is in bounds
      */
-    public boolean onBoard(ChessPosition myPosition){
+    private boolean onBoard(ChessPosition myPosition){
         return ( 1 <= myPosition.getRow() && myPosition.getRow() <= 8 && 1<= myPosition.getColumn() && myPosition.getColumn() <= 8 );
     }
+
+    /**
+     * Helper for pawn promotion
+     */
+    private boolean isPromotionRank(ChessPosition pos, ChessGame.TeamColor team) {
+        return (team == ChessGame.TeamColor.WHITE && pos.getRow() == 8)
+                || (team == ChessGame.TeamColor.BLACK && pos.getRow() == 1);
+    }
+
+    /**
+     * Helper 2 for pawn promotion
+     */
+    private void addPromotionMoves(Collection<ChessMove> moveList, ChessPosition start, ChessPosition end) {
+        for (ChessPiece.PieceType promo : new ChessPiece.PieceType[]{
+                ChessPiece.PieceType.QUEEN,
+                ChessPiece.PieceType.ROOK,
+                ChessPiece.PieceType.BISHOP,
+                ChessPiece.PieceType.KNIGHT}) {
+            moveList.add(new ChessMove(start, end, promo));
+        }
+    }
+
 
 
 }
