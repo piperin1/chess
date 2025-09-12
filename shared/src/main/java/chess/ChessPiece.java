@@ -98,52 +98,57 @@ public class ChessPiece {
                 }
                 break;
             case ROOK:
-                int[][] directions= {
+                int[][] rookDirections= {
                         {1, 0}, //up
                         {-1,0}, //down
                         {0, 1}, //right
                         {0,-1}, //left
                 };
-
-                for (int[] dir : directions) {
-                    int dRow = dir[0];
-                    int dCol = dir[1];
-                    int row = myPosition.getRow();
-                    int col = myPosition.getColumn();
-
-                    while(true) {
-                        row += dRow;
-                        col += dCol;
-                        ChessPosition next = new ChessPosition(row, col);
-
-                        if (!onBoard(next)) {
-                            break;
-                        }
-
-                        if (board.getPiece(next)!=null){
-                            if (board.getPiece(next).getTeamColor()!=team){
-                                ChessMove move = new ChessMove(myPosition, next,null);
-                                moveList.add(move);
-                            }
-                            break;
-                        }
-
-                        ChessMove move = new ChessMove(myPosition, next,null);
-                        moveList.add(move);
-                    }
-                }
+                calculateLinearMoves(moveList, myPosition, board, team, rookDirections);
                 break;
             case KNIGHT:
-                // add code
+                int[][] knightDirections= {
+                        {2, 1}, //upright
+                        {-2,1}, //downright
+                        {2, -1}, //upleft
+                        {-2,-1}, //downleft
+                        {1,2}, //rightup
+                        {-1,2}, //rightdown
+                        {1,-2}, //leftup
+                        {-1,-2} //leftdown
+                };
+                calculateJumpMoves(moveList, myPosition, board, team, knightDirections);
                 break;
             case BISHOP:
-                //add code
+                int[][] bishopDirections= {
+                        {1, 1}, //upright
+                        {-1,1}, //downright
+                        {1, -1}, //upleft
+                        {-1,-1}, //downleft
+                };
+                calculateLinearMoves(moveList, myPosition, board, team, bishopDirections);
                 break;
             case QUEEN:
-                //add code
+                int[][] queenDirections= {
+                        {1, 0}, //up
+                        {-1,0}, //down
+                        {0, 1}, //right
+                        {0,-1}, //left
+                        {1, 1}, //upright
+                        {-1,1}, //downright
+                        {1, -1}, //upleft
+                        {-1,-1}, //downleft
+                };
+                calculateLinearMoves(moveList, myPosition, board, team, queenDirections);
                 break;
             case KING:
-                //add code
+                int[][] kingDirections= {
+                        {1, 0}, //up
+                        {-1,0}, //down
+                        {0, 1}, //right
+                        {0,-1}, //left
+                };
+                calculateJumpMoves(moveList, myPosition, board, team, kingDirections);
                 break;
         }
 
@@ -178,6 +183,59 @@ public class ChessPiece {
         }
     }
 
+    private void calculateLinearMoves(Collection<ChessMove> moveList, ChessPosition myPosition, ChessBoard board, ChessGame.TeamColor team, int[][] directions){
+        for (int[] dir : directions) {
+            int dRow = dir[0];
+            int dCol = dir[1];
+            int row = myPosition.getRow();
+            int col = myPosition.getColumn();
 
+            while(true) {
+                row += dRow;
+                col += dCol;
+                ChessPosition next = new ChessPosition(row, col);
+
+                if (!onBoard(next)) {
+                    break;
+                }
+
+                if (board.getPiece(next)!=null){
+                    if (board.getPiece(next).getTeamColor()!=team){
+                        ChessMove move = new ChessMove(myPosition, next,null);
+                        moveList.add(move);
+                    }
+                    break;
+                }
+
+                ChessMove move = new ChessMove(myPosition, next,null);
+                moveList.add(move);
+            }
+        }
+    }
+
+    private void calculateJumpMoves(Collection<ChessMove> moveList, ChessPosition myPosition, ChessBoard board, ChessGame.TeamColor team, int[][] directions ) {
+        for (int[] dir : directions) {
+            int dRow = dir[0];
+            int dCol = dir[1];
+            int row = myPosition.getRow();
+            int col = myPosition.getColumn();
+
+            row += dRow;
+            col += dCol;
+            ChessPosition next = new ChessPosition(row, col);
+
+            if (!onBoard(next)) {
+                break;
+            }
+
+            if (board.getPiece(next) != null) {
+                if (board.getPiece(next).getTeamColor() != team) {
+                    ChessMove move = new ChessMove(myPosition, next, null);
+                    moveList.add(move);
+                }
+                break;
+            }
+        }
+    }
 
 }
