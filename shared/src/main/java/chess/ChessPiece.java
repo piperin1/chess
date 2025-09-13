@@ -235,6 +235,9 @@ public class ChessPiece {
                 }
                 break;
             }
+
+            ChessMove move = new ChessMove(myPosition, next,null);
+            moveList.add(move);
         }
     }
 
