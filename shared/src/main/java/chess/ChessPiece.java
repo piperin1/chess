@@ -149,6 +149,10 @@ public class ChessPiece {
                         {-1,0}, //down
                         {0, 1}, //right
                         {0,-1}, //left
+                        {1,1}, //upright
+                        {1,-1}, //upleft
+                        {-1,-1}, //downleft
+                        {-1,1}, //downright
                 };
                 calculateJumpMoves(moveList, myPosition, board, team, kingDirections);
                 break;
@@ -227,7 +231,7 @@ public class ChessPiece {
             ChessPosition next = new ChessPosition(row, col);
 
             if (!onBoard(next)) {
-                break;
+                continue;
             }
 
             if (board.getPiece(next) != null) {
@@ -235,7 +239,7 @@ public class ChessPiece {
                     ChessMove move = new ChessMove(myPosition, next, null);
                     moveList.add(move);
                 }
-                break;
+                continue;
             }
 
             ChessMove move = new ChessMove(myPosition, next,null);
