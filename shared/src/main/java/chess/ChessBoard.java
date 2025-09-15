@@ -41,8 +41,8 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        //clearBoard();
-        boardLayout = new ChessPiece[8][8];
+        clearBoard();
+        //boardLayout = new ChessPiece[8][8];
 
         ChessPiece.PieceType[] outerRow = {
                 ChessPiece.PieceType.ROOK, ChessPiece.PieceType.KNIGHT, ChessPiece.PieceType.BISHOP,
