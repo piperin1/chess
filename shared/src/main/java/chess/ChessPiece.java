@@ -53,6 +53,7 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         //Store and prepare values
+        // Add null check
         PieceType type = board.getPiece(myPosition).getPieceType();
         ChessGame.TeamColor team = board.getPiece(myPosition).getTeamColor();
         Collection<ChessMove> moveList = new ArrayList<>();
