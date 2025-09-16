@@ -1,5 +1,4 @@
 package chess;
-
 import java.util.Collection;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -54,7 +53,6 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         //Store and prepare values
-        // Add null check
         PieceType type = board.getPiece(myPosition).getPieceType();
         ChessGame.TeamColor team = board.getPiece(myPosition).getTeamColor();
         Collection<ChessMove> moveList = new ArrayList<>();
@@ -157,7 +155,6 @@ public class ChessPiece {
                 calculateJumpMoves(moveList, myPosition, board, team, kingDirections);
                 break;
         }
-
         return moveList;
     }
 
@@ -189,6 +186,9 @@ public class ChessPiece {
         }
     }
 
+    /**
+     * Calculates moves for pieces with linear, nonstop movement (Rook, Bishop, Queen)
+     */
     private void calculateLinearMoves(Collection<ChessMove> moveList, ChessPosition myPosition, ChessBoard board, ChessGame.TeamColor team, int[][] directions){
         for (int[] dir : directions) {
             int dRow = dir[0];
@@ -219,6 +219,9 @@ public class ChessPiece {
         }
     }
 
+    /**
+     * Calculates moves for pieces with singular movements (King, Knight)
+     */
     private void calculateJumpMoves(Collection<ChessMove> moveList, ChessPosition myPosition, ChessBoard board, ChessGame.TeamColor team, int[][] directions ) {
         for (int[] dir : directions) {
             int dRow = dir[0];
@@ -247,6 +250,9 @@ public class ChessPiece {
         }
     }
 
+    /**
+     * Override functions
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

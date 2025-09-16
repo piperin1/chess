@@ -1,5 +1,4 @@
 package chess;
-
 import java.util.Arrays;
 
 /**
@@ -42,7 +41,6 @@ public class ChessBoard {
      */
     public void resetBoard() {
         clearBoard();
-        //boardLayout = new ChessPiece[8][8];
 
         ChessPiece.PieceType[] outerRow = {
                 ChessPiece.PieceType.ROOK, ChessPiece.PieceType.KNIGHT, ChessPiece.PieceType.BISHOP,
@@ -76,6 +74,9 @@ public class ChessBoard {
         }
     }
 
+    /**
+     * Override functions
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

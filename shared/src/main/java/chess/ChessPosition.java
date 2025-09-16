@@ -33,6 +33,9 @@ public class ChessPosition {
         return posCol;
     }
 
+    /**
+     * Override functions
+     */
     @Override
     public String toString() {
         return "ChessPosition{" + "row=" + posRow + ", col=" + posCol +'}';

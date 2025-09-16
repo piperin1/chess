@@ -1,5 +1,4 @@
 package chess;
-
 import java.util.Objects;
 
 /**
@@ -23,18 +22,12 @@ public class ChessMove {
     /**
      * @return ChessPosition of starting location
      */
-    public ChessPosition getStartPosition() {
-        //throw new RuntimeException("Not implemented");
-        return pieceStart;
-    }
+    public ChessPosition getStartPosition() { return pieceStart; }
 
     /**
      * @return ChessPosition of ending location
      */
-    public ChessPosition getEndPosition() {
-        //throw new RuntimeException("Not implemented");
-        return pieceEnd;
-    }
+    public ChessPosition getEndPosition() { return pieceEnd; }
 
     /**
      * Gets the type of piece to promote a pawn to if pawn promotion is part of this
@@ -43,10 +36,12 @@ public class ChessMove {
      * @return Type of piece to promote a pawn to, or null if no promotion
      */
     public ChessPiece.PieceType getPromotionPiece() {
-
-        //throw new RuntimeException("Not implemented");
         return piecePromo;
     }
+
+    /**
+     * Override functions
+     */
     @Override
     public int hashCode() {
         return Objects.hash(pieceStart, pieceEnd, piecePromo);

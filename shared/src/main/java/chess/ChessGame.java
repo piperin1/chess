@@ -52,21 +52,28 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece piece = board.getPiece(startPosition);
-        ChessBoard curBoard = board;
-        if (piece==null){
+        if (piece == null) {
             return null;
         }
         Collection<ChessMove> moveList = piece.pieceMoves(board, startPosition);
-        Collection<ChessMove> validMoves =  new ArrayList<>();
+        Collection<ChessMove> validMoves = new ArrayList<>();
         for (ChessMove move : moveList) {
-            //makeMove(move);
-            if (!isInCheck(piece.getTeamColor())){
-                validMoves.add(move);
+            ChessBoard backup = deepCopyBoard(board);
+            try {
+                setBoard(backup);
+                makeMove(move);
+                if (!isInCheck(piece.getTeamColor())) {
+                    validMoves.add(move);
+                }
+            } catch (InvalidMoveException e) {
+                // Skip invalid moves
+            } finally {
+                setBoard(backup);
             }
-            setBoard(curBoard);
         }
         return validMoves;
     }
+
 
     /**
      * Makes a move in a chess game
@@ -151,6 +158,9 @@ public class ChessGame {
         return board;
     }
 
+    /**
+     * Locates and returns the position of the King for selected team
+     */
     public ChessPosition findKing(TeamColor team) {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -164,6 +174,27 @@ public class ChessGame {
         return null;
     }
 
+    /**
+     * @param original board to make copy of
+     * @return copy of board
+     */
+    private ChessBoard deepCopyBoard(ChessBoard original) {
+        ChessBoard copy = new ChessBoard();
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition pos = new ChessPosition(row, col);
+                ChessPiece piece = original.getPiece(pos);
+                if (piece != null) {
+                    copy.addPiece(pos, new ChessPiece(piece.getTeamColor(), piece.getPieceType()));
+                }
+            }
+        }
+        return copy;
+    }
+
+    /**
+     * Override functions
+     */
     @Override
     public String toString() {
         return "ChessGame{" + "teamTurn=" + teamTurn + ", board=" + board + '}';
