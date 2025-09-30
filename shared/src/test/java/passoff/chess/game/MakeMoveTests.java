@@ -9,7 +9,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import passoff.chess.TestUtilities;
 
-public class MakeMoveTests {
+public class
+MakeMoveTests {
     private static final String WRONG_BOARD = "Board not correct after move made";
     private ChessGame game;
 
