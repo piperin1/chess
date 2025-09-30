@@ -56,6 +56,7 @@ public class ChessGame {
         if (piece == null) {
             return null;
         }
+
         Collection<ChessMove> moveList = piece.pieceMoves(board, startPosition);
         Collection<ChessMove> validMoves = new ArrayList<>();
 
@@ -79,15 +80,16 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        boolean canMove = getTeamTurn() == board.getPiece(move.getStartPosition()).getTeamColor();
-        Collection<ChessMove> possibleMoves = validMoves(move.getStartPosition());
-        if (possibleMoves == null || !possibleMoves.contains(move) || !canMove) {
-            throw new InvalidMoveException("Invalid move");
-        }
-
         ChessPiece piece = board.getPiece(move.getStartPosition());
         if (piece == null) {
             throw new InvalidMoveException("No piece at starting square");
+        }
+
+        Collection<ChessMove> possibleMoves = validMoves(move.getStartPosition());
+        boolean canMove = getTeamTurn() == board.getPiece(move.getStartPosition()).getTeamColor();
+        boolean canAdd = possibleMoves.contains(move);
+        if (possibleMoves == null || !canAdd || !canMove) {
+            throw new InvalidMoveException("Invalid move");
         }
         if (move.getPromotionPiece() != null) {
             piece = new ChessPiece(piece.getTeamColor(),move.getPromotionPiece());
@@ -110,7 +112,6 @@ public class ChessGame {
             for (int j = 0; j < 8; j++) {
                 ChessPosition curPos = new ChessPosition(i+1, j+1);
                 ChessPiece curPiece = board.getPiece(curPos);
-
                 if (curPiece != null && curPiece.getTeamColor() != teamColor) {
                     Collection<ChessMove> enemyMoves = curPiece.pieceMoves(board, curPos);
 
@@ -132,9 +133,37 @@ public class ChessGame {
      * @param teamColor which team to check for checkmate
      * @return True if the specified team is in checkmate
      */
-    public boolean isInCheckmate(TeamColor teamColor) {
-        return isInCheck(teamColor) && isInStalemate(teamColor);
+    public boolean isInCheckmate(TeamColor color) {
+        if (!isInCheck(color)) {
+            return false;
+        }
+
+        for (int row = 1; row <= 8; row++) {
+            for (int col = 1; col <= 8; col++) {
+                ChessPosition start = new ChessPosition(row, col);
+                ChessPiece piece = board.getPiece(start);
+
+                if (piece != null && piece.getTeamColor() == color) {
+                    Collection<ChessMove> moves = piece.pieceMoves(board, start);
+
+                    for (ChessMove move : moves) {
+                        ChessPiece captured = board.getPiece(move.getEndPosition());
+                        board.addPiece(move.getEndPosition(), piece);
+                        board.addPiece(start, null);
+                        boolean stillInCheck = isInCheck(color);
+                        board.addPiece(start, piece);
+                        board.addPiece(move.getEndPosition(), captured);
+                        if (!stillInCheck) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+
+        return true;
     }
+
 
     /**
      * Determines if the given team is in stalemate, which here is defined as having
@@ -144,6 +173,10 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
+        if (isInCheck(teamColor)) {
+            return false;
+        }
+
         for (int y = 1; y <= 8; y++) {
             for (int x = 1; x <= 8; x++) {
                 Collection<ChessMove> moveList;
@@ -192,24 +225,6 @@ public class ChessGame {
             }
         }
         return null;
-    }
-
-    /**
-     * @param original board to make copy of
-     * @return copy of board
-     */
-    private ChessBoard deepCopyBoard(ChessBoard original) {
-        ChessBoard copy = new ChessBoard();
-        for (int row = 1; row <= 8; row++) {
-            for (int col = 1; col <= 8; col++) {
-                ChessPosition pos = new ChessPosition(row, col);
-                ChessPiece piece = original.getPiece(pos);
-                if (piece != null) {
-                    copy.addPiece(pos, new ChessPiece(piece.getTeamColor(), piece.getPieceType()));
-                }
-            }
-        }
-        return copy;
     }
 
     /**
