@@ -59,7 +59,7 @@ public class ChessPiece {
         if (team == ChessGame.TeamColor.BLACK) {
             direction = -1;
         }
-        
+
         switch (type) {
             case PAWN:
                 ChessPosition forwardOne = new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn());
@@ -80,14 +80,12 @@ public class ChessPiece {
                 }
                 for (int offset: new int[]{-1,1}) {
                     ChessPosition diag = new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn() + offset );
-                    if (onBoard(diag) && board.getPiece(diag)!=null) {
-                        if (board.getPiece(diag).getTeamColor() != team) {
+                    if (onBoard(diag) && board.getPiece(diag)!=null && board.getPiece(diag).getTeamColor() != team) {
                             if (isPromotionRank(diag, team)) {
                                 addPromotionMoves(moveList, myPosition, diag);
                             } else {
                                 moveList.add(new ChessMove(myPosition, diag, null));
                             }
-                        }
                     }
                 }
                 break;

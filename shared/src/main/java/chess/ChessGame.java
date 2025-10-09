@@ -114,13 +114,19 @@ public class ChessGame {
                 ChessPiece curPiece = board.getPiece(curPos);
                 if (curPiece != null && curPiece.getTeamColor() != teamColor) {
                     Collection<ChessMove> enemyMoves = curPiece.pieceMoves(board, curPos);
-
-                    for (ChessMove move : enemyMoves) {
-                        if (move.getEndPosition().equals(kingPos)) {
-                            return true;
-                        }
+                    if (checkEnemyMoves(enemyMoves, kingPos)){
+                        return true;
                     }
                 }
+            }
+        }
+        return false;
+    }
+
+    public boolean checkEnemyMoves(Collection<ChessMove> enemyMoves, ChessPosition kingPos){
+        for (ChessMove move : enemyMoves) {
+            if (move.getEndPosition().equals(kingPos)) {
+                return true;
             }
         }
         return false;
@@ -130,7 +136,7 @@ public class ChessGame {
     /**
      * Determines if the given team is in checkmate
      *
-     * @param teamColor which team to check for checkmate
+     * @param color which team to check for checkmate
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor color) {
@@ -144,26 +150,30 @@ public class ChessGame {
                 ChessPiece piece = board.getPiece(start);
 
                 if (piece != null && piece.getTeamColor() == color) {
-                    Collection<ChessMove> moves = piece.pieceMoves(board, start);
-
-                    for (ChessMove move : moves) {
-                        ChessPiece captured = board.getPiece(move.getEndPosition());
-                        board.addPiece(move.getEndPosition(), piece);
-                        board.addPiece(start, null);
-                        boolean stillInCheck = isInCheck(color);
-                        board.addPiece(start, piece);
-                        board.addPiece(move.getEndPosition(), captured);
-                        if (!stillInCheck) {
-                            return false;
-                        }
+                    if (canEscapeCheck(piece, start, color)) {
+                        return false;
                     }
                 }
             }
         }
-
         return true;
     }
 
+
+    private boolean canEscapeCheck(ChessPiece piece, ChessPosition start, TeamColor color) {
+        for (ChessMove move : piece.pieceMoves(board, start)) {
+            ChessPiece captured = board.getPiece(move.getEndPosition());
+            board.addPiece(move.getEndPosition(), piece);
+            board.addPiece(start, null);
+            boolean stillInCheck = isInCheck(color);
+            board.addPiece(start, piece);
+            board.addPiece(move.getEndPosition(), captured);
+            if (!stillInCheck) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * Determines if the given team is in stalemate, which here is defined as having
