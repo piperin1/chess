@@ -52,21 +52,16 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        //Store and prepare values
         PieceType type = board.getPiece(myPosition).getPieceType();
         ChessGame.TeamColor team = board.getPiece(myPosition).getTeamColor();
         Collection<ChessMove> moveList = new ArrayList<>();
-
-        //Determine direction based on team
         int direction = 1;
         if (team == ChessGame.TeamColor.BLACK) {
             direction = -1;
         }
-
-        //Calculate moves
+        
         switch (type) {
             case PAWN:
-                //Step Forward 1
                 ChessPosition forwardOne = new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn());
                 if (onBoard(forwardOne) && board.getPiece(forwardOne) == null) {
                     if (isPromotionRank(forwardOne, team)) {
@@ -75,15 +70,14 @@ public class ChessPiece {
                         moveList.add(new ChessMove(myPosition, forwardOne, null));
                     }
                 }
-                //Step Forward 2 (Conditional)
-                if ((team == ChessGame.TeamColor.WHITE && myPosition.getRow() == 2) || (team== ChessGame.TeamColor.BLACK && myPosition.getRow() == 7)) {
+                if ((team==ChessGame.TeamColor.WHITE && myPosition.getRow()==2) ||
+                        (team==ChessGame.TeamColor.BLACK && myPosition.getRow()==7)) {
                     ChessPosition forwardTwo = new ChessPosition(myPosition.getRow() + (2 * direction), myPosition.getColumn());
-                    if (onBoard(forwardTwo) && board.getPiece(forwardOne)== null && board.getPiece(forwardTwo) == null) {
+                    if (onBoard(forwardTwo) && board.getPiece(forwardOne) == null && board.getPiece(forwardTwo) == null) {
                         ChessMove move = new ChessMove(myPosition, forwardTwo, null);
                         moveList.add(move);
                     }
                 }
-                //Diagonal capture
                 for (int offset: new int[]{-1,1}) {
                     ChessPosition diag = new ChessPosition(myPosition.getRow() + direction, myPosition.getColumn() + offset );
                     if (onBoard(diag) && board.getPiece(diag)!=null) {
@@ -189,7 +183,8 @@ public class ChessPiece {
     /**
      * Calculates moves for pieces with linear, nonstop movement (Rook, Bishop, Queen)
      */
-    private void calculateLinearMoves(Collection<ChessMove> moveList, ChessPosition myPosition, ChessBoard board, ChessGame.TeamColor team, int[][] directions){
+    private void calculateLinearMoves(Collection<ChessMove> moveList, ChessPosition myPosition,
+                                      ChessBoard board, ChessGame.TeamColor team, int[][] directions){
         for (int[] dir : directions) {
             int dRow = dir[0];
             int dCol = dir[1];
@@ -222,7 +217,8 @@ public class ChessPiece {
     /**
      * Calculates moves for pieces with singular movements (King, Knight)
      */
-    private void calculateJumpMoves(Collection<ChessMove> moveList, ChessPosition myPosition, ChessBoard board, ChessGame.TeamColor team, int[][] directions ) {
+    private void calculateJumpMoves(Collection<ChessMove> moveList, ChessPosition myPosition,
+                                    ChessBoard board, ChessGame.TeamColor team, int[][] directions ) {
         for (int[] dir : directions) {
             int dRow = dir[0];
             int dCol = dir[1];
@@ -255,8 +251,8 @@ public class ChessPiece {
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) { return true; };
+        if (o == null || getClass() != o.getClass()) {return false;} ;
         ChessPiece that = (ChessPiece) o;
         return pieceTeam == that.pieceTeam && pieceType == that.pieceType;
     }
