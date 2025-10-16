@@ -1,6 +1,9 @@
 package service;
-import dataaccess.AuthDAO;
-import dataaccess.UserDAO;
+import dataaccess.*;
+import model.UserData;
+import model.AuthData;
+import java.util.UUID;
+
 
 public class UserService {
     private final UserDAO userDAO;
@@ -11,7 +14,15 @@ public class UserService {
         this.authDAO = authDAO;
     }
 
-    //public RegisterResult register(RegisterRequest registerRequest);
-   // public LoginResult login(LoginRequest loginRequest);
-    //public void logout(LogoutRequest logoutRequest);
+    public AuthData register(UserData user) throws Exception {
+        if (userDAO.getUser(user.username()) != null) {
+            throw new Exception("User already exists");
+        }
+
+        userDAO.createUser(user);
+        String authToken = UUID.randomUUID().toString();
+        AuthData auth = new AuthData(user.username(), authToken);
+        authDAO.createAuth(auth);
+        return auth;
+    }
 }
