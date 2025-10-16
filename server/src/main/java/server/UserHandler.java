@@ -12,7 +12,7 @@ public class UserHandler {
     }
 
     public Object register(Request request, Response response) {
-        
+
     }
 
 }
