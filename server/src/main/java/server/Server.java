@@ -27,7 +27,7 @@ public class Server {
         Spark.get("/game",);
         Spark.put("/game",);
         Spark.exception(DataAccessException.class,);*/
-        //Spark.awaitInitialization();
+        Spark.awaitInitialization();
         return Spark.port();
     }
 

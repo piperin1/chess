@@ -23,17 +23,17 @@ public class UserHandler {
             UserData user = gson.fromJson(request.body(), UserData.class);
             if (user.username() == null || user.password() == null || user.email() == null) {
                 response.status(400);
-                return gson.toJson(Map.of("message", "Missing required fields"));
+                return gson.toJson(Map.of("message", "Error: Missing required fields"));
             }
             AuthData auth = userService.register(user);
             response.status(200);
             return gson.toJson(auth);
         } catch (AlreadyTakenException e) {
             response.status(403);
-            return gson.toJson(Map.of("message", e.getMessage()));
+            return gson.toJson(Map.of("message", "Error: " + e.getMessage()));
         } catch (DataAccessException e) {
             response.status(500);
-            return gson.toJson(Map.of("message", "Internal server error"));
+            return gson.toJson(Map.of("message", "Error: Internal server error"));
         }
     }
 
@@ -42,17 +42,17 @@ public class UserHandler {
             UserData user = gson.fromJson(request.body(), UserData.class);
             if (user.username() == null || user.password() == null) {
                 response.status(400);
-                return gson.toJson(Map.of("message", "Missing username or password"));
+                return gson.toJson(Map.of("message", "Error: Missing username or password"));
             }
             AuthData auth = userService.login(user);
             response.status(200);
             return gson.toJson(auth);
         } catch (UnauthorizedException e) {
             response.status(401);
-            return gson.toJson(Map.of("message", e.getMessage()));
+            return gson.toJson(Map.of("message", "Error: " + e.getMessage()));
         } catch (DataAccessException e) {
             response.status(500);
-            return gson.toJson(Map.of("message", "Internal server error"));
+            return gson.toJson(Map.of("message", "Error: Internal server error"));
         }
     }
 
@@ -61,17 +61,17 @@ public class UserHandler {
             String authToken = request.headers("authorization");
             if (authToken == null || authToken.isEmpty()) {
                 response.status(400);
-                return gson.toJson(Map.of("message", "Missing Authorization header"));
+                return gson.toJson(Map.of("message", "Error: Missing Authorization header"));
             }
             userService.logout(authToken);
             response.status(200);
             return gson.toJson(Map.of());
         } catch (UnauthorizedException e) {
             response.status(401);
-            return gson.toJson(Map.of("message", e.getMessage()));
+            return gson.toJson(Map.of("message", "Error: " + e.getMessage()));
         } catch (DataAccessException e) {
             response.status(500);
-            return gson.toJson(Map.of("message", "Internal server error"));
+            return gson.toJson(Map.of("message", "Error: Internal server error"));
         }
     }
 }
