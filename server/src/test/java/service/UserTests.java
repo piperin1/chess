@@ -68,4 +68,20 @@ public class UserTests {
         userService.logout(auth.authToken());
         assertThrows(UnauthorizedException.class, () ->  userService.logout(auth.authToken()));
     }
+
+    @Test
+    void clearSuccess() throws DataAccessException, AlreadyTakenException {
+        UserData user = new UserData("test","password","test@example.com");
+        AuthData auth = userService.register(user);
+        userService.clear();
+        assertNull(userDAO.getUser("test"));
+        assertNull(authDAO.getAuth(auth.authToken()));
+    }
+
+    @Test
+    void clearFail() {
+        assertDoesNotThrow(() -> userService.clear());
+        assertDoesNotThrow(() -> userService.clear());
+    }
+
 }

@@ -9,11 +9,9 @@ public class Server {
     UserDAO userDAO = new MemoryUserDAO();
     AuthDAO authDAO = new MemoryAuthDAO();
 
-    ClearService clearService;
-
     UserService userService = new UserService(userDAO, authDAO);
 
-    ClearHandler clearHandler = new ClearHandler(clearService);
+    ClearHandler clearHandler = new ClearHandler(userService);
     UserHandler userHandler = new UserHandler(userService);
 
     public int run(int desiredPort) {

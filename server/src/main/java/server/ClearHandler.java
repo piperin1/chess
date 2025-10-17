@@ -1,21 +1,21 @@
 package server;
 
+import service.UserService;
 import spark.Request;
 import spark.Response;
-import service.ClearService;
 
 public class ClearHandler {
-    private final ClearService clearService;
+    private final UserService userService;
 
-    public ClearHandler(ClearService clearService) {
-        this.clearService = clearService;
+    public ClearHandler(UserService userService) {
+        this.userService = userService;
     }
 
     public Object handle(Request request, Response response) {
-        clearService.clear();
+        userService.clear();
+        //Add gameService.clear() here
         response.status(200);
         return "";
-
     }
 
 }
