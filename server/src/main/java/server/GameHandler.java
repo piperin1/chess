@@ -84,7 +84,7 @@ public class GameHandler {
 
             gameService.joinGame(authToken, joinReq.playerColor.toUpperCase(), joinReq.gameID);
             response.status(200);
-            return gson.toJson(Map.of()); // empty JSON on success
+            return gson.toJson(Map.of());
 
         } catch (UnauthorizedException e) {
             response.status(401);
