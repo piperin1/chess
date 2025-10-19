@@ -11,7 +11,7 @@ public class MemoryGameDAO implements GameDAO {
     @Override
     public int createGame(String gameName) throws DataAccessException {
         int gameID = nextID++;
-        GameData newGame = new GameData(gameID, gameName, null, null, new ChessGame());
+        GameData newGame = new GameData(gameID,null, null, gameName, new ChessGame());
         games.put(gameID, newGame);
         return gameID;
     }
@@ -34,7 +34,7 @@ public class MemoryGameDAO implements GameDAO {
 
     @Override
     public Map<Integer,GameData> listGames() throws DataAccessException {
-        return games;
+        return new HashMap<>(games);
     }
 
     @Override
